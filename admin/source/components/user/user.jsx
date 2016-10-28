@@ -32,9 +32,15 @@ class User extends React.Component {
                                 <td>Willian de Morais</td>
                                 <td>williandmorais@gmail.com</td>
                                 <td>
-                                    <span className="fa fa-edit fa-lg"> </span>
+                                    <button type="button" className="btn btn-success">
+                                        <span className="fa fa-edit fa-lg"> </span>
+                                    </button>
                                 </td>
-                                <td><span className="fa fa-trash fa-lg"></span></td>
+                                <td>
+                                    <button type="button" className="btn btn-danger" data-toggle="modal" data-target="#modalDeleteUser">
+                                        <span className="fa fa-trash fa-lg"></span>
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -88,7 +94,35 @@ class User extends React.Component {
                         </div>
                     </div>
                 </div>
+
+                <div className="modal fade" id="modalDeleteUser">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Fechar">
+                                     <span className="fa fa-remove"></span>
+                                </button>
+                                <h4 className="modal-title">Você tem certeza que deseja realizar esta ação?</h4>
+                            </div>
+
+                            <div className="modal-body">
+                                <div className="container-fluid">
+                                    <div className="row text-xs-center">
+                                        <div className="col-md-4">
+                                            <button className="btn btn-danger btn-block">Não</button>
+                                        </div>
+
+                                        <div className="col-md-4">
+                                            <button className="btn btn-success btn-block">Sim</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         );
     }
 }
