@@ -1,0 +1,34 @@
+/*
+ * Base structure
+ */
+
+.nav-fluid {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.content {
+    margin-left: 16.66667%;
+}
+
+/* Sidebar navigation */
+.sidebar {
+    position: fixed;
+    height: 100%;
+}
+
+.sidebar-item > a {
+  color: white;
+}
+
+.sidebar-item > a.active {
+  background-color: #CB084C !important;
+}
+
+.sidebar-item:hover {
+  background-color: #CB084C;
+}
+
+.no-padding {
+    padding: 0px;
+}

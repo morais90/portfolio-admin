@@ -1,0 +1,12 @@
+version: '2'
+services:
+  bellacia-admin:
+    build: .
+    image: bellacia-admin
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/code/
+    command: npm start
