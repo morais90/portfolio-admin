@@ -5,7 +5,7 @@ class User extends React.Component {
     render() {
         return (
             <div className="row">
-                <div className="col-md-12">
+                <div className="col-xs-12">
                     <nav className="navbar navbar-light navbar-full bg-faded">
                         <form className="form-inline float-xs-right">
                             <button type="button" data-toggle="modal" data-target="#modalCreateUser" className="btn btn-primary">
@@ -15,7 +15,7 @@ class User extends React.Component {
                     </nav>
                 </div>
 
-                <div className="col-md-12">
+                <div className="col-xs-12">
                     <table className="table table-bordered text-xs-center">
                         <thead className="thead-inverse">
                             <tr>
@@ -28,16 +28,16 @@ class User extends React.Component {
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">1</th>
+                                <td>1</td>
                                 <td>Willian de Morais</td>
                                 <td>williandmorais@gmail.com</td>
                                 <td>
-                                    <button type="button" className="btn btn-success">
+                                    <button type="button" className="btn btn-link btn-sm">
                                         <span className="fa fa-edit fa-lg"> </span>
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" className="btn btn-danger" data-toggle="modal" data-target="#modalDeleteUser">
+                                    <button type="button" className="btn btn-link btn-sm" data-toggle="modal" data-target="#modalDeleteUser">
                                         <span className="fa fa-trash fa-lg"></span>
                                     </button>
                                 </td>
@@ -59,29 +59,29 @@ class User extends React.Component {
                             <div className="modal-body">
                                 <form>
                                     <div className="form-group row">
-                                        <label className="col-md-2 col-form-label">Nome</label>
-                                        <div className="col-md-10">
+                                        <label className="col-xs-2 col-form-label">Nome</label>
+                                        <div className="col-xs-10">
                                             <input className="form-control" type="text" maxLength="50" required />
                                         </div>
                                     </div>
 
                                     <div className="form-group row">
-                                        <label className="col-md-2 col-form-label">Sobrenome</label>
-                                        <div className="col-md-10">
+                                        <label className="col-xs-2 col-form-label">Sobrenome</label>
+                                        <div className="col-xs-10">
                                             <input className="form-control" type="text" maxLength="50" required />
                                         </div>
                                     </div>
 
                                     <div className="form-group row">
-                                        <label className="col-md-2 col-form-label">E-mail</label>
-                                        <div className="col-md-10">
+                                        <label className="col-xs-2 col-form-label">E-mail</label>
+                                        <div className="col-xs-10">
                                             <input className="form-control" type="email" required />
                                         </div>
                                     </div>
 
                                     <div className="form-group row">
-                                        <label className="col-md-2 col-form-label">Senha</label>
-                                        <div className="col-md-10">
+                                        <label className="col-xs-2 col-form-label">Senha</label>
+                                        <div className="col-xs-10">
                                             <input className="form-control" type="password" required />
                                         </div>
                                     </div>
@@ -108,11 +108,11 @@ class User extends React.Component {
                             <div className="modal-body">
                                 <div className="container-fluid">
                                     <div className="row text-xs-center">
-                                        <div className="col-md-4">
+                                        <div className="col-xs">
                                             <button className="btn btn-danger btn-block">Não</button>
                                         </div>
 
-                                        <div className="col-md-4">
+                                        <div className="col-xs">
                                             <button className="btn btn-success btn-block">Sim</button>
                                         </div>
                                     </div>
