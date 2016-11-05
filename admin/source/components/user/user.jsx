@@ -10,7 +10,6 @@ var pagination = {
 window.list_users = []
 //TODO pegar usuarios da API
 function getUsers() {
-    console.log("global->getUsers")
     if (window.list_users.length > 0) {
         return window.list_users
     }
@@ -102,7 +101,6 @@ let control = {
 }
 
 function clearControl() {
-    console.log("global->clearControl")
     control = {
         id: undefined,
         name: "",
@@ -115,7 +113,6 @@ function updateNumPages() {
     pagination.NUM_PAGES = Math.ceil(getUsers().length / pagination.NUM_PER_PAGE)
 }
 function changePage(e) {
-    console.log("global->changePage")
     updateNumPages()
     if (e !== undefined) {
         if (e === -1) {
@@ -273,7 +270,6 @@ class User extends React.Component {
 
     //TODO salvar Usuario na API
     handleSubmit(event) {
-        console.log("User->handleSubmit")
         control.name = $("#user-name").val()
         control.lastname = $("#user-lastname").val()
         control.email = $("#user-email").val()
@@ -290,13 +286,11 @@ class User extends React.Component {
     }
 
     handleReset(e) {
-        console.log("User->handleReset")
         this.clearModalCreateUsuer()
     }
 
     //TODO remover usuario da API
     handleConfirmRemove(e) {
-        console.log("User->handleConfirmRemove")
         var index = this.state.users.indexOf(control);
         this.state.users.splice(index, true);
         this.setState(this.state.users);
@@ -305,19 +299,16 @@ class User extends React.Component {
     }
 
     handleNonRemove(e) {
-        console.log("User->handleNonRemove")
         $("#modal-delete-user").modal("hide")
         clearControl()
     }
 
     handleClickAdd(event) {
-        console.log("User->handleClickAdd")
         $("#modal-create-user").modal()
         $("#modal-title-user").text('Adicionar usuário')
     }
 
     render() {
-        console.log("User->render")
         return (
             <div id="teste" className="form-control row">
                 <div className="col-md-12">
