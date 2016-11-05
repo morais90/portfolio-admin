@@ -1,26 +1,20 @@
 import React from 'react';
 
-let control = {
-    id: undefined,
-    name: "",
-    lastname: "",
-    email: "",
-    password: ""
+var pagination = {
+    NUM_PER_PAGE: 3,
+    NUM_PAGES: 0,
+    CURRENT_PAGE: 0
 }
 
-function clearControl() {
-    control = {
-        id: undefined,
-        name: "",
-        lastname: "",
-        email: "",
-        password: ""
-    }
-}
-
+// Necessario para testes
+window.list_users = []
 //TODO pegar usuarios da API
 function getUsers() {
-    return [
+    console.log("global->getUsers")
+    if (window.list_users.length > 0) {
+        return window.list_users
+    }
+    window.list_users = [
         {
             id: '1',
             name: 'Football',
@@ -51,9 +45,136 @@ function getUsers() {
             lastname: 'Chaves',
             email: 'hugo@chaves.com',
             password: 'wowo'
+        }, {
+            id: '6',
+            name: 'Hugo',
+            lastname: 'Chaves',
+            email: 'hugo@chaves.com',
+            password: 'wowo'
+        }, {
+            id: '7',
+            name: 'Hugo',
+            lastname: 'Chaves',
+            email: 'hugo@chaves.com',
+            password: 'wowo'
+        }, {
+            id: '8',
+            name: 'Hugo',
+            lastname: 'Chaves',
+            email: 'hugo@chaves.com',
+            password: 'wowo'
+        }, {
+            id: '9',
+            name: 'Hugo',
+            lastname: 'Chaves',
+            email: 'hugo@chaves.com',
+            password: 'wowo'
+        }, {
+            id: '10',
+            name: 'Hugo',
+            lastname: 'Chaves',
+            email: 'hugo@chaves.com',
+            password: 'wowo'
+        }, {
+            id: '11',
+            name: 'Hugo',
+            lastname: 'Chaves',
+            email: 'hugo@chaves.com',
+            password: 'wowo'
+        }, {
+            id: '12',
+            name: 'Hugo',
+            lastname: 'Chaves',
+            email: 'hugo@chaves.com',
+            password: 'wowo'
         }
     ];
 
+    return window.list_users
+}
+
+let control = {
+    id: undefined,
+    name: "",
+    lastname: "",
+    email: "",
+    password: ""
+}
+
+function clearControl() {
+    console.log("global->clearControl")
+    control = {
+        id: undefined,
+        name: "",
+        lastname: "",
+        email: "",
+        password: ""
+    }
+}
+function updateNumPages() {
+    pagination.NUM_PAGES = Math.ceil(getUsers().length / pagination.NUM_PER_PAGE)
+}
+function changePage(e) {
+    console.log("global->changePage")
+    updateNumPages()
+    if (e !== undefined) {
+        if (e === -1) {
+            pagination.CURRENT_PAGE = (pagination.CURRENT_PAGE - 1) < 0 ? 0 : pagination.CURRENT_PAGE - 1
+        } else if (e === -99) {
+            pagination.CURRENT_PAGE = (pagination.CURRENT_PAGE + 1) > pagination.NUM_PAGES - 1 ? pagination.NUM_PAGES - 1 : pagination.CURRENT_PAGE + 1
+        } else {
+            pagination.CURRENT_PAGE = e
+        }
+    }
+    if (pagination.CURRENT_PAGE === pagination.NUM_PAGES) {
+        pagination.CURRENT_PAGE = pagination.NUM_PAGES - 1
+    }
+
+    $(".page-item").removeClass("active")
+    $("#page-" + pagination.CURRENT_PAGE).addClass("active")
+
+    $("#tabela").find('tbody tr').hide()
+    let first = pagination.CURRENT_PAGE * pagination.NUM_PER_PAGE
+    let last  = (pagination.CURRENT_PAGE + 1) * pagination.NUM_PER_PAGE
+    $("#tabela").find('tbody tr').slice(first, last).show()
+}
+
+function LinkPaginate() {
+    updateNumPages()
+    let lis = []
+    for (let i = 0; i < pagination.NUM_PAGES; i++) {
+        var id = "page-" + i
+        lis.push(
+            <li className="page-item" id={id} key={i} onClick={changePage.bind(null, i)}>
+                <a className="page-link" href="#">{i + 1}</a>
+            </li>
+        )
+    }
+    return lis
+}
+
+class NavBarPagination extends React.Component {
+    render() {
+        return (
+            <nav id="nav-pagination" aria-label="Page navigation">
+                <ul className="pagination">
+                    <li className="page-item" onClick={changePage.bind(null, -1)}>
+                        <a className="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span className="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    {LinkPaginate()}
+                    <li className="page-item" onClick={changePage.bind(null, -99)}>
+                        <a className="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span className="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        )
+    }
 }
 
 class UserRow extends React.Component {
@@ -84,7 +205,7 @@ class UserRow extends React.Component {
                 <td>{this.props.user.email}</td>
                 <td>
                     <div className="btn-group">
-                        <button  title="Editar usuário" type="button" className="btn btn-sm btn-success" onClick={this.onEditEvent.bind(this)}>
+                        <button title="Editar usuário" type="button" className="btn btn-sm btn-success" onClick={this.onEditEvent.bind(this)}>
                             <span className="fa fa-edit fa-lg"></span>
                         </button>
                         <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={this.onDelEvent.bind(this)}>
@@ -98,9 +219,9 @@ class UserRow extends React.Component {
 }
 
 class UserTable extends React.Component {
+
     render() {
         let rows = []
-
         this.props.users.forEach(function(user) {
             rows.push(<UserRow user={user} key={user.id}/>)
         })
@@ -133,25 +254,34 @@ class User extends React.Component {
         }
     }
 
+    componentDidUpdate(props) {
+        changePage()
+    }
+
+    // organiza tabela apos ser renderizada
+    componentDidMount() {
+        changePage()
+    }
+
     clearModalCreateUsuer() {
         clearControl()
         $("#user-name").val("")
         $("#user-lastname").val("")
         $("#user-email").val("")
         $("#user-password").val("")
-
     }
 
     //TODO salvar Usuario na API
     handleSubmit(event) {
+        console.log("User->handleSubmit")
         control.name = $("#user-name").val()
         control.lastname = $("#user-lastname").val()
         control.email = $("#user-email").val()
         control.password = $("#user-password").val()
         var index = this.state.users.indexOf(control);
-        if(index === -1){
+        if (index === -1) {
             //adicionando id fake
-            control.id = this.state.users.length + 1
+            control.id = window.list_users.length + 1
             this.state.users.push(control)
         }
         this.setState(this.state.users);
@@ -160,11 +290,13 @@ class User extends React.Component {
     }
 
     handleReset(e) {
+        console.log("User->handleReset")
         this.clearModalCreateUsuer()
     }
 
     //TODO remover usuario da API
     handleConfirmRemove(e) {
+        console.log("User->handleConfirmRemove")
         var index = this.state.users.indexOf(control);
         this.state.users.splice(index, true);
         this.setState(this.state.users);
@@ -173,16 +305,19 @@ class User extends React.Component {
     }
 
     handleNonRemove(e) {
+        console.log("User->handleNonRemove")
         $("#modal-delete-user").modal("hide")
         clearControl()
     }
 
     handleClickAdd(event) {
+        console.log("User->handleClickAdd")
         $("#modal-create-user").modal()
         $("#modal-title-user").text('Adicionar usuário')
     }
 
     render() {
+        console.log("User->render")
         return (
             <div id="teste" className="form-control row">
                 <div className="col-md-12">
@@ -193,6 +328,7 @@ class User extends React.Component {
                     </nav>
                 </div>
                 <UserTable users={this.state.users}/>
+                <NavBarPagination className=" text-xs-center"/>
 
                 <div className="modal fade" id="modal-create-user">
                     <div className="modal-dialog" role="document">
@@ -208,7 +344,7 @@ class User extends React.Component {
                                 <div className="form-group row">
                                     <label className="col-md-2 col-form-label">Nome</label>
                                     <div className="col-md-10">
-                                        <input id="user-name" className="form-control" type="text" maxLength="50"  required autoFocus/>
+                                        <input id="user-name" className="form-control" type="text" maxLength="50" required autoFocus/>
                                     </div>
                                 </div>
 
