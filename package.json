@@ -4,7 +4,7 @@
   "description": "Admin Bellacia",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server"
+    "start": "./node_modules/.bin/webpack-dev-server --history-api-fallback"
   },
   "repository": {
     "type": "git",
