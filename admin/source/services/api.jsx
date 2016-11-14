@@ -30,11 +30,15 @@ class API {
         return $.ajax(settings);
     }
 
-    post(url, data=null, auth=true) {
+    post(url, data, auth=true, extra_settings=null) {
         let settings = {
             url: url,
             method: "POST",
             dataType: "json"
+        }
+
+        if (extra_settings) {
+            $.extend(settings, extra_settings);
         }
 
         if (data) {
