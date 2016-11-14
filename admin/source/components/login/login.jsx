@@ -1,4 +1,5 @@
 import React from 'react';
+import AuthEndpoint from '../../services/auth.jsx';
 
 
 class Login extends React.Component {
@@ -11,18 +12,21 @@ class Login extends React.Component {
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.api = new AuthEndpoint();
     }
 
     handleEmailChange(e) {
-       this.setState({email: e.target.value});
+        this.setState({email: e.target.value});
     }
 
     handlePasswordChange(e) {
-       this.setState({password: e.target.value});
+        this.setState({password: e.target.value});
     }
 
     handleSubmit(e) {
-        console.log(this.state.email, this.state.password);
+        this.api.login(this.state.email, this.state.password)
+        .done((data) => console.log(data))
+        .fail((data) => console.log(data));
     }
 
     render() {
