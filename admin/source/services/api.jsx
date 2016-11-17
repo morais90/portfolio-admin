@@ -1,3 +1,6 @@
+import { withRouter } from 'react-router';
+
+
 class API {
     constructor() {
         this.rootUrl = API_URL;
@@ -30,20 +33,29 @@ class API {
         return $.ajax(settings);
     }
 
-    post(url, data, auth=true, extra_settings=null) {
+    post(url, data, auth=true, headers={}) {
         let settings = {
             url: url,
             method: "POST",
-            dataType: "json"
-        }
-
-        if (extra_settings) {
-            $.extend(settings, extra_settings);
+            dataType: "json",
+            headers: headers
         }
 
         if (data) {
             settings.data = data;
         };
+
+        if (auth) {
+            let token = localStorage.getItem('token');
+
+            if (token) {
+                settings.headers.Authorization = `Bearer ${token}`;
+            } else {
+                this.props.router.push({
+                    pathname: 'login'
+                })
+            }
+        }
         return $.ajax(settings);
     }
 
@@ -77,4 +89,4 @@ class API {
     }
 }
 
-export default API;
+export default withRouter(API);
