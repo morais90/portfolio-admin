@@ -1,3 +1,6 @@
+import { browserHistory } from 'react-router';
+
+
 class API {
     constructor() {
         this.rootUrl = API_URL;
@@ -9,7 +12,7 @@ class API {
         let token = localStorage.getItem('token');
 
         if (!token) {
-            console.log('to root');
+            browserHistory.push('/login');
         }
 
         settings.headers.Authorization = `Bearer ${token}`;
