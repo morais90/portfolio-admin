@@ -1,11 +1,18 @@
-import { withRouter } from 'react-router';
-
-
 class API {
     constructor() {
         this.rootUrl = API_URL;
         this.events = {};
         this.eventsOnce = {};
+    }
+
+    authHeader(settings) {
+        let token = localStorage.getItem('token');
+
+        if (!token) {
+            console.log('to root');
+        }
+
+        settings.headers.Authorization = `Bearer ${token}`;
     }
 
     prepareUrl(endpoint, querystring=null) {
@@ -24,12 +31,18 @@ class API {
         return `${this.rootUrl}${endpoint}`
     }
 
-    get(url, auth=true) {
+    get(url, auth=true, headers={}) {
         let settings = {
             url: url,
             method: "GET",
-            dataType: "json"
+            dataType: "json",
+            headers: headers
         };
+
+        if (auth) {
+            this.authHeader(settings);
+        }
+
         return $.ajax(settings);
     }
 
@@ -46,47 +59,58 @@ class API {
         };
 
         if (auth) {
-            let token = localStorage.getItem('token');
-
-            if (token) {
-                settings.headers.Authorization = `Bearer ${token}`;
-            } else {
-                this.props.router.push({
-                    pathname: 'login'
-                })
-            }
+            this.authHeader(settings);
         }
+
         return $.ajax(settings);
     }
 
-    put(url, data, auth=true) {
+    put(url, data, auth=true, headers={}) {
         let settings = {
             url: url,
             method: "PUT",
             data: data,
-            dataType: "json"
+            dataType: "json",
+            headers: headers
         };
+
+        if (auth) {
+            this.authHeader(settings);
+        }
+
         return $.ajax(settings);
     }
 
-    patch(url, data, auth=true) {
+    patch(url, data, auth=true, headers={}) {
         let settings = {
             url: url,
             method: "PATCH",
             data: data,
-            dataType: "json"
+            dataType: "json",
+            headers: headers
         };
+
+        if (auth) {
+            this.authHeader(settings);
+        }
+
         return $.ajax(settings);
     }
 
-    delete(url, auth=true) {
+    delete(url, auth=true, headers={}) {
         let settings = {
             url: url,
             method: "DELETE",
-            dataType: "json"
+            dataType: "json",
+            headers: headers
         };
+
+        if (auth) {
+            this.authHeader(settings);
+        }
+
         return $.ajax(settings);
     }
 }
 
-export default withRouter(API);
+export default API;
