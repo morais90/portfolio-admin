@@ -1,5 +1,5 @@
 import React from 'react';
-import UserEndpoint from '../../services/user.jsx';
+import UserEndpoint from '../../services/user.js';
 
 
 class UserBoard extends React.Component {
@@ -12,7 +12,9 @@ class UserBoard extends React.Component {
     }
 
     handleUserList(data) {
-        console.log(data);
+        this.setState({
+            users: data.results
+        });
     }
 
     handleUserListFail(data) {
@@ -22,7 +24,7 @@ class UserBoard extends React.Component {
     componentDidMount() {
         this.api.list()
         .done(
-            (data) => this.handleUserList(data.responseJSON)
+            (data) => this.handleUserList(data)
         )
         .fail(
             (data) => this.handleUserListFail(data.responseJSON)
@@ -51,10 +53,11 @@ class UserBoard extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            {this.state.users.map((user) =>
+                            <tr key={user.id}>
+                                <td>{user.id}</td>
+                                <td>{user.full_name}</td>
+                                <td>{user.email}</td>
                                 <td>
                                     <div className="btn-group">
                                         <button title="Editar usuário" type="button" className="btn btn-sm btn-success">
@@ -66,6 +69,7 @@ class UserBoard extends React.Component {
                                     </div>
                                 </td>
                             </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
