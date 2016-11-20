@@ -26,6 +26,11 @@ class UserEndpoint extends API {
         let url = this.prepareUrl(`users/${id}/`);
         return this.get(url);
     }
+
+    remove(id) {
+        let url = this.prepareUrl(`users/${id}/`);
+        return this.delete(url);
+    }
 }
 
 export default UserEndpoint;
