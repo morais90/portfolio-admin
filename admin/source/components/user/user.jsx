@@ -99,10 +99,16 @@ class UserBoard extends React.Component {
                                         <button title="Editar usuário" type="button" className="btn btn-sm btn-success">
                                             <span className="fa fa-edit fa-lg"></span>
                                         </button>
-                                    <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={() => this.handleDeleteClick(user)}>
-                                            <span className="fa fa-trash fa-lg"></span>
-                                        </button>
-                                    </div>
+                                        { user.is_active ? (
+                                            <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={() => this.handleDeleteClick(user)}>
+                                                <span className="fa fa-trash fa-lg"></span>
+                                            </button>
+                                        ) : (
+                                            <button title="Reativar usuário" type="button" className="btn btn-sm btn-warning">
+                                                <span className="fa fa-undo fa-lg"></span>
+                                            </button>
+                                        )}
+                                     </div>
                                 </td>
                             </tr>
                             )}
