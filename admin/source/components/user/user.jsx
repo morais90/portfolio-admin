@@ -1,4 +1,7 @@
 import React from 'react';
+import { withRouter } from 'react-router';
+
+import { DeleteModal } from '../commons/modal.jsx';
 import UserEndpoint from '../../services/user.js';
 
 
@@ -9,26 +12,59 @@ class UserBoard extends React.Component {
             users: []
         };
         this.api = new UserEndpoint();
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.handleDeleteClickYes = this.handleDeleteClickYes.bind(this);
+        this.handleUserDelete = this.handleUserDelete.bind(this);
+        this.handleUserDeleteFail = this.handleUserDeleteFail.bind(this);
     }
 
     handleUserList(data) {
         this.setState({
-            users: data.results
+            users: data.results,
+            activeUser: null,
+            deleteModalShow: false
         });
     }
 
-    handleUserListFail(data) {
+    handleUserListFail(data, status) {
+        if (status == 'Unauthorized') {
+            localStorage.removeItem('token');
+            this.props.router.push('/login');
+        } else {
+            console.log(`Unkown error ${data} - ${status}`);
+        }
+    }
+
+    handleDeleteClick(user) {
+        this.setState({
+            activeUser: user,
+            deleteModalShow: true
+        });
+    }
+
+    handleDeleteClickYes() {
+        this.api.remove(this.state.activeUser.id)
+        .done((data) => this.handleUserDelete(data))
+        .fail((data) => this.handleUserDeleteFail(data.responseJSON, data.statusText));
+    }
+
+    handleUserDelete(data) {
         console.log(data);
+    }
+
+    handleUserDeleteFail(data, status) {
+        if (status == 'Unauthorized') {
+            localStorage.removeItem('token');
+            this.props.router.push('/login');
+        } else {
+            console.log(`Unkown error ${data} - ${status}`);
+        }
     }
 
     componentDidMount() {
         this.api.list()
-        .done(
-            (data) => this.handleUserList(data)
-        )
-        .fail(
-            (data) => this.handleUserListFail(data.responseJSON)
-        );
+        .done((data) => this.handleUserList(data))
+        .fail((data) => this.handleUserListFail(data.responseJSON, data.statusText));
     }
 
     render() {
@@ -63,7 +99,7 @@ class UserBoard extends React.Component {
                                         <button title="Editar usuário" type="button" className="btn btn-sm btn-success">
                                             <span className="fa fa-edit fa-lg"></span>
                                         </button>
-                                        <button title="Remover usuário" type="button" className="btn btn-sm btn-danger">
+                                    <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={() => this.handleDeleteClick(user)}>
                                             <span className="fa fa-trash fa-lg"></span>
                                         </button>
                                     </div>
@@ -120,35 +156,10 @@ class UserBoard extends React.Component {
                         </div>
                     </div>
                 </div>
-
-                <div className="modal fade" id="modal-delete-user">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Fechar">
-                                    <span className="fa fa-remove"></span>
-                                </button>
-                                <h4 className="modal-title">Você tem certeza que deseja realizar esta ação?</h4>
-                            </div>
-
-                            <div className="modal-body">
-                                <div className="container-fluid">
-                                    <div className="row col-xs-12">
-                                        <div className="col-xs-6">
-                                            <button className="btn btn-danger btn-block">Não</button>
-                                        </div>
-                                        <div className="col-xs-6">
-                                            <button className="btn btn-success btn-block">Sim</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <DeleteModal show={this.state.deleteModalShow} onYes={this.handleDeleteClickYes}></DeleteModal>
             </div>
         )
     }
 }
 
-export default UserBoard;
+export default withRouter(UserBoard);
