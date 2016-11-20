@@ -14,4 +14,4 @@ const authCheck = (nextstate, replace) => {
     }
 }
 
-export {authRequired, authCheck}
+export {authRequired, authCheck};
