@@ -50,7 +50,7 @@ class Login extends React.Component {
             data.expires_in * 1000 - (600 * 1000)
         );
         this.props.router.push({
-            pathname: '/'
+            pathname: 'dashboard'
         });
     }
 
