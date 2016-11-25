@@ -2,15 +2,15 @@ const authRequired = (nextstate, replace) => {
     let credentials =  localStorage.getItem('token');
 
     if (!credentials) {
-        replace('/login');
-    }
+        replace('login');
+    } 
 }
 
 const authCheck = (nextstate, replace) => {
     let credentials = localStorage.getItem('token');
 
     if (credentials) {
-        replace('/');
+        replace('dashboard');
     }
 }
 
