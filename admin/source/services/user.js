@@ -31,6 +31,11 @@ class UserEndpoint extends API {
         let url = this.prepareUrl(`users/${id}/`);
         return this.delete(url);
     }
+
+    undelete(id) {
+        let url = this.prepareUrl(`users/${id}/undelete/`);
+        return this.post(url);
+    }
 }
 
 export default UserEndpoint;
