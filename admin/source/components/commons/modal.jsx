@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-class DeleteModal extends React.Component {
+class ConfirmationModal extends React.Component {
 
     constructor(props) {
         super(props);
@@ -29,13 +29,13 @@ class DeleteModal extends React.Component {
 
     componentDidUpdate() {
         if (this.props.show) {
-            $('#DeleteModal').modal('show');
+            $('#ConfirmationModal').modal('show');
         }
     }
 
     render() {
         return (
-            <div className="modal fade" id="DeleteModal">
+            <div className="modal fade" id="ConfirmationModal">
                 <div className="modal-dialog modal-sm" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -64,4 +64,4 @@ class DeleteModal extends React.Component {
     }
 }
 
-export { DeleteModal };
+export { ConfirmationModal };
