@@ -68,7 +68,7 @@ class API {
         return $.ajax(settings);
     }
 
-    put(url, data, auth=true, headers={}) {
+    put(url, data={}, auth=true, headers={}) {
         let settings = {
             url: url,
             method: "PUT",
