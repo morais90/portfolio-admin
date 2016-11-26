@@ -49,17 +49,15 @@ class API {
         return $.ajax(settings);
     }
 
-    post(url, data, auth=true, headers={}) {
+    post(url, data={}, auth=true, headers={}) {
         let settings = {
             url: url,
             method: "POST",
             dataType: "json",
+            data: JSON.stringify(data),
+            contentType: "application/json",
             headers: headers
         }
-
-        if (data) {
-            settings.data = data;
-        };
 
         if (auth) {
             this.authHeader(settings);
@@ -73,6 +71,7 @@ class API {
             url: url,
             method: "PUT",
             data: data,
+            contentType: "application/json",
             dataType: "json",
             headers: headers
         };
