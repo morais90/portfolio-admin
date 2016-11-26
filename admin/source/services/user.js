@@ -4,7 +4,7 @@ import API from './api.js';
 class UserEndpoint extends API {
     create(data) {
         let url = this.prepareUrl('users');
-        return this.post(url);
+        return this.post(url, data);
     }
 
     update(id, data) {
