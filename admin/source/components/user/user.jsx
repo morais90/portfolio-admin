@@ -24,6 +24,7 @@ class UserModal extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleUserCreate = this.handleUserCreate.bind(this);
         this.handleUserCreateFail = this.handleUserCreateFail.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
     }
 
     handleFirstNameChange(e) {
@@ -82,6 +83,12 @@ class UserModal extends React.Component {
         }
     }
 
+    handleModalClose() {
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
+    }
+
     componentDidUpdate() {
         if (this.props.show) {
             $('#modalCreateUser').modal('show');
@@ -94,7 +101,7 @@ class UserModal extends React.Component {
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Fechar">
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Fechar" onClick={this.handleModalClose}>
                                 <span className="fa fa-remove"></span>
                             </button>
                             <h4 id="modal-title-user" className="modal-title">Criar usuário</h4>
@@ -160,17 +167,24 @@ class UserBoard extends React.Component {
             users: [],
             activeUser: null,
             deleteModalShow: false,
-            createModalShow: false
+            createModalShow: false,
+            trClass: ''
         };
         this.api = new UserEndpoint();
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleDeleteClickYes = this.handleDeleteClickYes.bind(this);
+        this.handleDeleteClickNo = this.handleDeleteClickNo.bind(this);
         this.handleUserDelete = this.handleUserDelete.bind(this);
         this.handleUserDeleteFail = this.handleUserDeleteFail.bind(this);
         this.handleUndeleteClick = this.handleUndeleteClick.bind(this);
         this.handleUndeleteUser = this.handleUndeleteUser.bind(this);
         this.handleUndeleteUserFail = this.handleUndeleteUserFail.bind(this);
         this.handleCreateClick = this.handleCreateClick.bind(this);
+        this.handleUserModalClose = this.handleUserModalClose.bind(this);
+        this.handleDeleteModalClose = this.handleDeleteModalClose.bind(this);
+        this.handleUserDetail = this.handleUserDetail.bind(this);
+        this.handleUserDetailEnter = this.handleUserDetailEnter.bind(this);
+        this.handleUserDetailLeave = this.handleUserDetailLeave.bind(this);
     }
 
     handleUserList(data) {
@@ -201,6 +215,15 @@ class UserBoard extends React.Component {
         this.api.remove(this.state.activeUser.id)
         .done((data) => this.handleUserDelete(data))
         .fail((data) => this.handleUserDeleteFail(data.responseJSON, data.statusText));
+        this.setState({
+            deleteModalShow: false
+        });
+    }
+
+    handleDeleteClickNo() {
+        this.setState({
+            deleteModalShow: false
+        })
     }
 
     handleUserDelete(data) {
@@ -242,7 +265,31 @@ class UserBoard extends React.Component {
     handleCreateClick() {
         this.setState({
             createModalShow: true
-        })
+        });
+    }
+
+    handleUserModalClose() {
+        this.setState({
+            createModalShow: false
+        });
+    }
+
+    handleDeleteModalClose() {
+        this.setState({
+            deleteModalShow: false
+        });
+    }
+
+    handleUserDetail(user) {
+        console.log(user);
+    }
+
+    handleUserDetailEnter(e) {
+        e.currentTarget.className = 'table-active font-weight-bold';
+    }
+
+    handleUserDetailLeave(e) {
+        e.currentTarget.className = '';
     }
 
     componentDidMount() {
@@ -274,7 +321,7 @@ class UserBoard extends React.Component {
                         </thead>
                         <tbody>
                             {this.state.users.map((user) =>
-                            <tr key={user.id}>
+                                <tr key={user.id} onClick={() => this.handleUserDetail(user)} onMouseEnter={this.handleUserDetailEnter} onMouseLeave={this.handleUserDetailLeave} className={this.state.trClass}>
                                 <td>{user.id}</td>
                                 <td>{user.full_name}</td>
                                 <td>{user.email}</td>
@@ -300,8 +347,8 @@ class UserBoard extends React.Component {
                     </table>
                 </div>
 
-                <UserModal show={this.state.createModalShow}></UserModal>
-                <ConfirmationModal show={this.state.deleteModalShow} onYes={this.handleDeleteClickYes}></ConfirmationModal>
+                <UserModal show={this.state.createModalShow} onClose={this.handleUserModalClose}></UserModal>
+                <ConfirmationModal show={this.state.deleteModalShow} onYes={this.handleDeleteClickYes} onNo={this.handleDeleteClickNo} onClose={this.handleDeleteModalClose}></ConfirmationModal>
             </div>
         )
     }
