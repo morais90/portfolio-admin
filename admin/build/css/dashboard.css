@@ -36,3 +36,7 @@
 .login-container {
     margin-top: 6em;
 }
+
+.table tbody > tr:hover {
+    cursor: pointer;
+}
