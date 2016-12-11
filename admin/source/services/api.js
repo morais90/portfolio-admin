@@ -70,7 +70,7 @@ class API {
         let settings = {
             url: url,
             method: "PUT",
-            data: data,
+            data: JSON.stringify(data),
             contentType: "application/json",
             dataType: "json",
             headers: headers

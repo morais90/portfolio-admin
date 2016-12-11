@@ -1,163 +1,9 @@
 import React from 'react';
-import { withRouter } from 'react-router';
+import { Link, withRouter } from 'react-router';
 
 import { ConfirmationModal } from '../commons/modal.jsx';
+import UserModal from './user-modal.jsx';
 import UserEndpoint from '../../services/user.js';
-
-
-class UserModal extends React.Component {
-    constructor(props) {
-        super(props);
-        this.api = new UserEndpoint();
-        this.state = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
-            showPassword: false
-        }
-        this.handleFirstNameChange = this.handleFirstNameChange.bind(this);
-        this.handleLastNameChange = this.handleLastNameChange.bind(this);
-        this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleShowPassword = this.handleShowPassword.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleUserCreate = this.handleUserCreate.bind(this);
-        this.handleUserCreateFail = this.handleUserCreateFail.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
-    }
-
-    handleFirstNameChange(e) {
-        this.setState({
-            firstName: e.target.value
-        })
-    }
-
-    handleLastNameChange(e) {
-        this.setState({
-            lastName: e.target.value
-        })
-    }
-
-    handleEmailChange(e) {
-        this.setState({
-            email: e.target.value
-        })
-    }
-
-    handlePasswordChange(e) {
-        this.setState({
-            password: e.target.value
-        })
-    }
-
-    handleShowPassword() {
-        this.setState({
-            showPassword: !this.state.showPassword
-        })
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-        let data = {
-            first_name: this.state.firstName,
-            last_name: this.state.lastName,
-            email: this.state.email,
-            password: this.state.password
-        };
-        this.api.create(data)
-        .done((data) => this.handleUserCreate(data))
-        .fail((data) => this.handleUserCreateFail(data.responseJSON, data.statusText));
-    }
-
-    handleUserCreate(data) {
-        console.log(data);
-    }
-
-    handleUserCreateFail(data, status) {
-        if (status == 'Unauthorized') {
-            localStorage.removeItem('token');
-            this.props.router.push('/login');
-        } else {
-            console.log(`Unkown error ${data} - ${status}`);
-        }
-    }
-
-    handleModalClose() {
-        if (this.props.onClose) {
-            this.props.onClose();
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.props.show) {
-            $('#modalCreateUser').modal('show');
-        }
-    }
-
-    render() {
-        return (
-            <div className="modal fade" id="modalCreateUser">
-                <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Fechar" onClick={this.handleModalClose}>
-                                <span className="fa fa-remove"></span>
-                            </button>
-                            <h4 id="modal-title-user" className="modal-title">Criar usuário</h4>
-                        </div>
-
-                        <div className="modal-body">
-                            <form onSubmit={this.handleSubmit}>
-                                <div className="form-group row">
-                                    <label className="col-xs-2 col-form-label">Nome</label>
-                                    <div className="col-xs-10">
-                                        <input className="form-control" type="text" maxLength="50" value={this.state.firstName} onChange={this.handleFirstNameChange} required/>
-                                    </div>
-                                </div>
-
-                                <div className="form-group row">
-                                    <label className="col-xs-2 col-form-label">Sobrenome</label>
-                                    <div className="col-xs-10">
-                                        <input className="form-control" type="text" maxLength="50" value={this.state.lastName} onChange={this.handleLastNameChange} required/>
-                                    </div>
-                                </div>
-
-                                <div className="form-group row">
-                                    <label className="col-xs-2 col-form-label">E-mail</label>
-                                    <div className="col-xs-10">
-                                        <input className="form-control" type="email" value={this.state.email} onChange={this.handleEmailChange} required/>
-                                    </div>
-                                </div>
-
-                                <div className="form-group row">
-                                    <label className="col-xs-2 col-form-label">Senha</label>
-                                    <div className="col-xs-8">
-                                        <input className="form-control" type={this.state.showPassword ? "text":"password"} value={this.state.passord} onChange={this.handlePasswordChange} required/>
-                                    </div>
-
-                                    <div className="col-xs-2">
-                                        <button title="Mostrar senha" type="button" className="btn btn-secondary" data-toggle="button" aria-pressed="false" onClick={this.handleShowPassword}>
-                                            { this.state.showPassword ? (
-                                                <span className="fa fa-eye-slash fa-lg"></span>
-                                            ):(
-                                                <span className="fa fa-eye fa-lg"></span>
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="modal-footer">
-                                    <button type="submit" className="btn btn-primary">Salvar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-}
 
 
 class UserBoard extends React.Component {
@@ -180,11 +26,9 @@ class UserBoard extends React.Component {
         this.handleUndeleteUser = this.handleUndeleteUser.bind(this);
         this.handleUndeleteUserFail = this.handleUndeleteUserFail.bind(this);
         this.handleCreateClick = this.handleCreateClick.bind(this);
+        this.handleUserModalSave = this.handleUserModalSave.bind(this);
         this.handleUserModalClose = this.handleUserModalClose.bind(this);
         this.handleDeleteModalClose = this.handleDeleteModalClose.bind(this);
-        this.handleUserDetail = this.handleUserDetail.bind(this);
-        this.handleUserDetailEnter = this.handleUserDetailEnter.bind(this);
-        this.handleUserDetailLeave = this.handleUserDetailLeave.bind(this);
     }
 
     handleUserList(data) {
@@ -268,6 +112,15 @@ class UserBoard extends React.Component {
         });
     }
 
+    handleUserModalSave(user) {
+        this.setState({
+            createModalShow: false
+        });
+        this.api.list()
+        .done((data) => this.handleUserList(data))
+        .fail((data) => this.handleUserListFail(data.responseJSON, data.statusText));
+    }
+
     handleUserModalClose() {
         this.setState({
             createModalShow: false
@@ -278,18 +131,6 @@ class UserBoard extends React.Component {
         this.setState({
             deleteModalShow: false
         });
-    }
-
-    handleUserDetail(user) {
-        console.log(user);
-    }
-
-    handleUserDetailEnter(e) {
-        e.currentTarget.className = 'table-active font-weight-bold';
-    }
-
-    handleUserDetailLeave(e) {
-        e.currentTarget.className = '';
     }
 
     componentDidMount() {
@@ -321,33 +162,35 @@ class UserBoard extends React.Component {
                         </thead>
                         <tbody>
                             {this.state.users.map((user) =>
-                                <tr key={user.id} onClick={() => this.handleUserDetail(user)} onMouseEnter={this.handleUserDetailEnter} onMouseLeave={this.handleUserDetailLeave} className={this.state.trClass}>
-                                <td>{user.id}</td>
-                                <td>{user.full_name}</td>
-                                <td>{user.email}</td>
-                                <td>
-                                    <div className="btn-group">
-                                        <button title="Editar usuário" type="button" className="btn btn-sm btn-success">
-                                            <span className="fa fa-edit fa-lg"></span>
-                                        </button>
-                                        { user.is_active ? (
-                                            <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={() => this.handleDeleteClick(user)}>
-                                                <span className="fa fa-trash fa-lg"></span>
+                                <tr key={user.id} className="table table-bordered table-hover">
+                                    <td>
+                                        <Link to={`/user/${user.id}`}>{user.id}</Link>
+                                    </td>
+                                    <td>{user.full_name}</td>
+                                    <td>{user.email}</td>
+                                    <td>
+                                        <div className="btn-group">
+                                            <button title="Editar usuário" type="button" className="btn btn-sm btn-success">
+                                                <span className="fa fa-edit fa-lg"></span>
                                             </button>
-                                        ) : (
-                                            <button title="Reativar usuário" type="button" className="btn btn-sm btn-warning" onClick={() => this.handleUndeleteClick(user)}>
-                                                <span className="fa fa-undo fa-lg"></span>
-                                            </button>
-                                        )}
-                                     </div>
-                                </td>
-                            </tr>
+                                            { user.is_active ? (
+                                                <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={() => this.handleDeleteClick(user)}>
+                                                    <span className="fa fa-trash fa-lg"></span>
+                                                </button>
+                                            ) : (
+                                                <button title="Reativar usuário" type="button" className="btn btn-sm btn-warning" onClick={() => this.handleUndeleteClick(user)}>
+                                                    <span className="fa fa-undo fa-lg"></span>
+                                                </button>
+                                            )}
+                                         </div>
+                                     </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                <UserModal show={this.state.createModalShow} onClose={this.handleUserModalClose}></UserModal>
+                <UserModal show={this.state.createModalShow} onSave={this.handleUserModalSave} onClose={this.handleUserModalClose}></UserModal>
                 <ConfirmationModal show={this.state.deleteModalShow} onYes={this.handleDeleteClickYes} onNo={this.handleDeleteClickNo} onClose={this.handleDeleteModalClose}></ConfirmationModal>
             </div>
         )
