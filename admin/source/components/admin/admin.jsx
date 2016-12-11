@@ -14,22 +14,22 @@ class Admin extends React.Component {
                     <div className="sidebar col-md-2 bg-inverse no-padding">
                         <ul className="nav nav-pills nav-stacked">
                             <li className="nav-item sidebar-item">
-                                <Link to={'dashboard'} activeClassName="active" className="nav-link">
+                                <Link to={'/dashboard'} activeClassName="active" className="nav-link">
                                     <span className="fa fa-dashboard"></span> DASHBOARD
                                 </Link>
                             </li>
                             <li className="nav-item sidebar-item">
-                                <Link to={'account'} activeClassName="active" className="nav-link">
+                                <Link to={'/account'} activeClassName="active" className="nav-link">
                                     <span className="fa fa-money"></span> FINANCEIRO
                                 </Link>
                             </li>
                             <li className="nav-item sidebar-item">
-                                <Link to={'essay'} activeClassName="active" className="nav-link">
+                                <Link to={'/essay'} activeClassName="active" className="nav-link">
                                     <span className="fa fa-photo"></span> ENSAIOS
                                 </Link>
                             </li>
                             <li className="nav-item sidebar-item">
-                                <Link to={'user'} activeClassName="active" className="nav-link">
+                                <Link to={'/user'} activeClassName="active" className="nav-link">
                                     <span className="fa fa-user"></span> USUÁRIOS
                                 </Link>
                             </li>

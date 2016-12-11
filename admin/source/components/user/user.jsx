@@ -1,17 +1,152 @@
 import React from 'react';
+import { Link, withRouter } from 'react-router';
+
+import { ConfirmationModal } from '../commons/modal.jsx';
+import UserModal from './user-modal.jsx';
+import UserEndpoint from '../../services/user.js';
 
 
-class User extends React.Component {
+class UserBoard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: [],
+            activeUser: null,
+            deleteModalShow: false,
+            createModalShow: false,
+            trClass: ''
+        };
+        this.api = new UserEndpoint();
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.handleDeleteClickYes = this.handleDeleteClickYes.bind(this);
+        this.handleDeleteClickNo = this.handleDeleteClickNo.bind(this);
+        this.handleUserDelete = this.handleUserDelete.bind(this);
+        this.handleUserDeleteFail = this.handleUserDeleteFail.bind(this);
+        this.handleUndeleteClick = this.handleUndeleteClick.bind(this);
+        this.handleUndeleteUser = this.handleUndeleteUser.bind(this);
+        this.handleUndeleteUserFail = this.handleUndeleteUserFail.bind(this);
+        this.handleCreateClick = this.handleCreateClick.bind(this);
+        this.handleUserModalSave = this.handleUserModalSave.bind(this);
+        this.handleUserModalClose = this.handleUserModalClose.bind(this);
+        this.handleDeleteModalClose = this.handleDeleteModalClose.bind(this);
+    }
+
+    handleUserList(data) {
+        this.setState({
+            users: data.results,
+            activeUser: null,
+            deleteModalShow: false
+        });
+    }
+
+    handleUserListFail(data, status) {
+        if (status == 'Unauthorized') {
+            localStorage.removeItem('token');
+            this.props.router.push('/login');
+        } else {
+            console.log(`Unkown error ${data} - ${status}`);
+        }
+    }
+
+    handleDeleteClick(user) {
+        this.setState({
+            activeUser: user,
+            deleteModalShow: true
+        });
+    }
+
+    handleDeleteClickYes() {
+        this.api.remove(this.state.activeUser.id)
+        .done((data) => this.handleUserDelete(data))
+        .fail((data) => this.handleUserDeleteFail(data.responseJSON, data.statusText));
+        this.setState({
+            deleteModalShow: false
+        });
+    }
+
+    handleDeleteClickNo() {
+        this.setState({
+            deleteModalShow: false
+        })
+    }
+
+    handleUserDelete(data) {
+        this.api.list()
+        .done((data) => this.handleUserList(data))
+        .fail((data) => this.handleUserListFail(data.responseJSON, data.statusText));
+    }
+
+    handleUserDeleteFail(data, status) {
+        if (status == 'Unauthorized') {
+            localStorage.removeItem('token');
+            this.props.router.push('/login');
+        } else {
+            console.log(`Unkown error ${data} - ${status}`);
+        }
+    }
+
+    handleUndeleteClick(user) {
+        this.api.undelete(user.id)
+        .done((data) => this.handleUndeleteUser(data))
+        .fail((data) => this.handleUndeleteUserFail(data.responseJSON, data.statusText));
+    }
+
+    handleUndeleteUser(data) {
+        this.api.list()
+        .done((data) => this.handleUserList(data))
+        .fail((data) => this.handleUserListFail(data.responseJSON, data.statusText));
+    }
+
+    handleUndeleteUserFail(data, status) {
+        if (status == 'Unauthorized') {
+            localStorage.removeItem('token');
+            this.props.router.push('/login');
+        } else {
+            console.log(`Unkown error ${data} - ${status}`);
+        }
+    }
+
+    handleCreateClick() {
+        this.setState({
+            createModalShow: true
+        });
+    }
+
+    handleUserModalSave(user) {
+        this.setState({
+            createModalShow: false
+        });
+        this.api.list()
+        .done((data) => this.handleUserList(data))
+        .fail((data) => this.handleUserListFail(data.responseJSON, data.statusText));
+    }
+
+    handleUserModalClose() {
+        this.setState({
+            createModalShow: false
+        });
+    }
+
+    handleDeleteModalClose() {
+        this.setState({
+            deleteModalShow: false
+        });
+    }
+
+    componentDidMount() {
+        this.api.list()
+        .done((data) => this.handleUserList(data))
+        .fail((data) => this.handleUserListFail(data.responseJSON, data.statusText));
+    }
+
     render() {
         return (
             <div className="row">
                 <div className="col-xs-12">
                     <nav className="navbar navbar-light navbar-full bg-faded">
-                        <form className="form-inline float-xs-right">
-                            <button type="button" data-toggle="modal" data-target="#modalCreateUser" className="btn btn-primary">
-                                <span className="fa fa-user-plus"></span>
-                            </button>
-                        </form>
+                        <button title="Adicionar usuário" className="btn btn-primary float-xs-right" onClick={this.handleCreateClick}>
+                            <span className="fa fa-user-plus"></span>
+                        </button>
                     </nav>
                 </div>
 
@@ -19,112 +154,47 @@ class User extends React.Component {
                     <table className="table table-bordered text-xs-center">
                         <thead className="thead-inverse">
                             <tr>
-                                <th className="text-xs-center">#</th>
+                                <th className="text-xs-center" scope="row">#</th>
                                 <th className="text-xs-center">Nome</th>
                                 <th className="text-xs-center">E-mail</th>
-                                <th className="text-xs-center"></th>
-                                <th className="text-xs-center"></th>
+                                <th className="text-xs-center" width="100px">Operações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Willian de Morais</td>
-                                <td>williandmorais@gmail.com</td>
-                                <td>
-                                    <button type="button" className="btn btn-link btn-sm">
-                                        <span className="fa fa-edit fa-lg"> </span>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" className="btn btn-link btn-sm" data-toggle="modal" data-target="#modalDeleteUser">
-                                        <span className="fa fa-trash fa-lg"></span>
-                                    </button>
-                                </td>
-                            </tr>
+                            {this.state.users.map((user) =>
+                                <tr key={user.id} className="table table-bordered table-hover">
+                                    <td>
+                                        <Link to={`/user/${user.id}`}>{user.id}</Link>
+                                    </td>
+                                    <td>{user.full_name}</td>
+                                    <td>{user.email}</td>
+                                    <td>
+                                        <div className="btn-group">
+                                            <button title="Editar usuário" type="button" className="btn btn-sm btn-success">
+                                                <span className="fa fa-edit fa-lg"></span>
+                                            </button>
+                                            { user.is_active ? (
+                                                <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={() => this.handleDeleteClick(user)}>
+                                                    <span className="fa fa-trash fa-lg"></span>
+                                                </button>
+                                            ) : (
+                                                <button title="Reativar usuário" type="button" className="btn btn-sm btn-warning" onClick={() => this.handleUndeleteClick(user)}>
+                                                    <span className="fa fa-undo fa-lg"></span>
+                                                </button>
+                                            )}
+                                         </div>
+                                     </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
 
-                <div className="modal fade" id="modalCreateUser">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Fechar">
-                                     <span className="fa fa-remove"></span>
-                                </button>
-                                <h4 className="modal-title">Criar usuário</h4>
-                            </div>
-
-                            <div className="modal-body">
-                                <form>
-                                    <div className="form-group row">
-                                        <label className="col-xs-2 col-form-label">Nome</label>
-                                        <div className="col-xs-10">
-                                            <input className="form-control" type="text" maxLength="50" required />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group row">
-                                        <label className="col-xs-2 col-form-label">Sobrenome</label>
-                                        <div className="col-xs-10">
-                                            <input className="form-control" type="text" maxLength="50" required />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group row">
-                                        <label className="col-xs-2 col-form-label">E-mail</label>
-                                        <div className="col-xs-10">
-                                            <input className="form-control" type="email" required />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group row">
-                                        <label className="col-xs-2 col-form-label">Senha</label>
-                                        <div className="col-xs-10">
-                                            <input className="form-control" type="password" required />
-                                        </div>
-                                    </div>
-
-                                    <div className="modal-footer">
-                                        <button type="submit" className="btn btn-primary">Salvar</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="modal fade" id="modalDeleteUser">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Fechar">
-                                     <span className="fa fa-remove"></span>
-                                </button>
-                                <h4 className="modal-title">Você tem certeza que deseja realizar esta ação?</h4>
-                            </div>
-
-                            <div className="modal-body">
-                                <div className="container-fluid">
-                                    <div className="row text-xs-center">
-                                        <div className="col-xs">
-                                            <button className="btn btn-danger btn-block">Não</button>
-                                        </div>
-
-                                        <div className="col-xs">
-                                            <button className="btn btn-success btn-block">Sim</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <UserModal show={this.state.createModalShow} onSave={this.handleUserModalSave} onClose={this.handleUserModalClose}></UserModal>
+                <ConfirmationModal show={this.state.deleteModalShow} onYes={this.handleDeleteClickYes} onNo={this.handleDeleteClickNo} onClose={this.handleDeleteModalClose}></ConfirmationModal>
             </div>
-
-        );
+        )
     }
 }
 
-export default User;
+export default withRouter(UserBoard);
