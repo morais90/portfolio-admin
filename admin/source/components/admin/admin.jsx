@@ -28,9 +28,22 @@ class Admin extends React.Component {
                                     <span className="fa fa-photo"></span> ENSAIOS
                                 </Link>
                             </li>
+
+                            <li className="nav-item sidebar-item">
+                                <Link to={'/hooker'} className="nav-link">
+                                    <span className="fa fa-group"></span> MODELOS
+                                </Link>
+                            </li>
+
                             <li className="nav-item sidebar-item">
                                 <Link to={'/user'} activeClassName="active" className="nav-link">
                                     <span className="fa fa-user"></span> USUÁRIOS
+                                </Link>
+                            </li>
+
+                            <li className="nav-item sidebar-item">
+                                <Link to={'/service'} activeClassName="active" className="nav-link">
+                                    <span className="fa fa-cogs"></span> SERVIÇOS
                                 </Link>
                             </li>
                         </ul>

@@ -1,4 +1,4 @@
-import API from './api.jsx';
+import API from './api.js';
 
 
 class AuthEndpoint extends API {

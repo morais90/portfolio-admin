@@ -11,7 +11,10 @@ import Account from './components/account/account.jsx';
 import UserBoard from './components/user/user.jsx';
 import UserDetailBoard from './components/user/user-detail-board.jsx';
 import UserDetail from './components/user/user-detail.jsx';
-
+import HookerBoard from './components/hooker/hooker.jsx';
+import HookerDetailBoard from './components/hooker/hooker-detail-board.jsx';
+import HookerDetail from './components/hooker/hooker-detail.jsx'
+import ServiceBoard from './components/service/service.jsx';
 
 render((
     <Router history={browserHistory}>
@@ -21,11 +24,16 @@ render((
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/essay' component={Essay} />
             <Route path='/account' component={Account} />
+            <Route path='/hooker' component={HookerBoard}>
+                <IndexRoute component={HookerDetail} />
+                <Route path='/hooker/:id/detail' component={HookerDetail} />
+            </Route>
             <Route path='/user' component={UserBoard} />
             <Route path='/user/:id' component={UserDetailBoard}>
                 <IndexRoute component={UserDetail} />
                 <Route path='/user/:id/detail' component={UserDetail} />
             </Route>
+            <Route path='/service' component={ServiceBoard} />
         </Route>
     </Router>
 ), document.getElementById('admin'));

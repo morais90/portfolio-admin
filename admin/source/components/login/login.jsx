@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import AuthEndpoint from '../../services/auth.jsx';
+import AuthEndpoint from '../../services/auth.js';
 
 
 class Login extends React.Component {
