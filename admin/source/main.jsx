@@ -13,7 +13,9 @@ import UserDetailBoard from './components/user/user-detail-board.jsx';
 import UserDetail from './components/user/user-detail.jsx';
 import HookerBoard from './components/hooker/hooker.jsx';
 import HookerDetailBoard from './components/hooker/hooker-detail-board.jsx';
-import HookerDetail from './components/hooker/hooker-detail.jsx'
+import HookerDetail from './components/hooker/hooker-detail.jsx';
+import HookerCreateBoard from './components/hooker/hooker-create-board.jsx';
+import { HookerCreateGeneral, HookerCreatePicture, HookerCreateContact } from './components/hooker/hooker-create.jsx';
 import ServiceBoard from './components/service/service.jsx';
 
 render((
@@ -24,10 +26,14 @@ render((
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/essay' component={Essay} />
             <Route path='/account' component={Account} />
-            <Route path='/hooker' component={HookerBoard}>
-                <IndexRoute component={HookerDetail} />
-                <Route path='/hooker/:id/detail' component={HookerDetail} />
+            <Route path='/hooker' component={HookerBoard} />
+            <Route path='/hooker/create' component={HookerCreateBoard}>
+                <IndexRoute component={HookerCreateGeneral} />
+                <Route path='/hooker/create/general' component={HookerCreateGeneral} />
+                <Route path='/hooker/create/picture' component={HookerCreatePicture} />
+                <Route path='/hooker/create/contact' component={HookerCreateContact} />
             </Route>
+            <Route path='/hooker/:id' component={HookerDetailBoard} />
             <Route path='/user' component={UserBoard} />
             <Route path='/user/:id' component={UserDetailBoard}>
                 <IndexRoute component={UserDetail} />
