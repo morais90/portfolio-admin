@@ -13,8 +13,7 @@ class UserBoard extends React.Component {
             users: [],
             activeUser: null,
             deleteModalShow: false,
-            createModalShow: false,
-            trClass: ''
+            createModalShow: false
         };
         this.api = new UserEndpoint();
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
@@ -35,7 +34,6 @@ class UserBoard extends React.Component {
         this.setState({
             users: data.results,
             activeUser: null,
-            deleteModalShow: false
         });
     }
 
@@ -157,7 +155,7 @@ class UserBoard extends React.Component {
                                 <th className="text-xs-center" scope="row">#</th>
                                 <th className="text-xs-center">Nome</th>
                                 <th className="text-xs-center">E-mail</th>
-                                <th className="text-xs-center" width="100px">Operações</th>
+                                <th className="text-xs-center" width="100px">Remover</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -169,20 +167,15 @@ class UserBoard extends React.Component {
                                     <td>{user.full_name}</td>
                                     <td>{user.email}</td>
                                     <td>
-                                        <div className="btn-group">
-                                            <button title="Editar usuário" type="button" className="btn btn-sm btn-success">
-                                                <span className="fa fa-edit fa-lg"></span>
-                                            </button>
-                                            { user.is_active ? (
-                                                <button title="Remover usuário" type="button" className="btn btn-sm btn-danger" onClick={() => this.handleDeleteClick(user)}>
-                                                    <span className="fa fa-trash fa-lg"></span>
-                                                </button>
-                                            ) : (
-                                                <button title="Reativar usuário" type="button" className="btn btn-sm btn-warning" onClick={() => this.handleUndeleteClick(user)}>
-                                                    <span className="fa fa-undo fa-lg"></span>
-                                                </button>
-                                            )}
-                                         </div>
+                                    { user.is_active ? (
+                                        <button title="Remover usuário" type="button" className="btn btn-danger" onClick={() => this.handleDeleteClick(user)}>
+                                            <span className="fa fa-trash fa-lg"></span>
+                                        </button>
+                                    ) : (
+                                        <button title="Reativar usuário" type="button" className="btn btn-warning" onClick={() => this.handleUndeleteClick(user)}>
+                                            <span className="fa fa-undo fa-lg"></span>
+                                        </button>
+                                    )}
                                      </td>
                                 </tr>
                             )}
