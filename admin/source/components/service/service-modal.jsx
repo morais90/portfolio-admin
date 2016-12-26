@@ -40,6 +40,10 @@ class ServiceModal extends React.Component {
         if (this.props.onSave) {
             this.props.onSave(data);
         }
+
+        this.setState({
+            name: ''
+        });
     }
 
     handleServiceCreateFail(error, status) {
